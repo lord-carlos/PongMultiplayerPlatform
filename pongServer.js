@@ -157,6 +157,11 @@ Paddle.prototype.stop = function () {
 function Ball() {
   this.position = { x: 400, y: 375 }
   this.angle = Math.random() - 0.5;
+
+  if(Math.random()>0.5){
+    this.angle += Math.PI;
+  }
+
   this.direction = { x: Math.cos(this.angle), y: Math.sin(this.angle) }
 
   this.speed = 3;
