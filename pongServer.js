@@ -107,7 +107,7 @@ function CollisionDetector(paddle, ball){
   {
     if(paddle.side == "left" && paddle.position.x + paddle.width >= ball.position.x - (ball.diameter/2) )
     {
-      var angle = valueFromRange(ball.position.y, paddle.position.y, paddle.position.y + paddle.height, 1/4*Math.PI, -3/4*Math.PI);
+      var angle = valueFromRange(ball.position.y, paddle.position.y, paddle.position.y + paddle.height, -1/4*Math.PI, 1/4*Math.PI);
       ball.bounce(angle);
     }
     if(paddle.side == "right" && paddle.position.x <= ball.position.x + (ball.diameter/2)){
