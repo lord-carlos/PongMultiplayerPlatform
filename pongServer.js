@@ -13,6 +13,7 @@ console.log("Server started.");
 
 var sockets = {};
 var paddles = {};
+
 var ball = new Ball();
 
 var isStarted = false;
@@ -63,30 +64,32 @@ io.sockets.on('connection', function (socket) {
 });
 
 setInterval(function () {
-  if(isStarted){
-    if (ball) {
-      for (i in paddles) {
-          CollisionDetector(paddles[i], ball);
-          paddles[i].update();
-      }
-      ball.update();
-
-      var sideWon = checkWinner(paddles, ball);
-      if(sideWon != "")
-      {
-        isStarted = false;
-        io.sockets.emit("score", {side: sideWon});
-        return;
-      }
-
-      io.sockets.emit("update", {
-          ball: {
-            position: ball.position,
-            diameter: ball.diameter
-          },
-          paddles: paddles
-      });
+  if(isStarted && ball){
+    for (i in paddles) {
+        CollisionDetector(paddles[i], ball);
+        paddles[i].update();
     }
+    ball.update();
+
+    var sideWon = checkWinner(paddles, ball);
+    if(sideWon != "")
+    {
+      isStarted = false;
+      io.sockets.emit("score", {side: sideWon});
+      return;
+    }
+  }
+}, 1000 / 500);
+
+setInterval(function(){
+  if(isStarted && ball){
+    io.sockets.emit("update", {
+        ball: {
+          position: ball.position,
+          diameter: ball.diameter
+        },
+        paddles: paddles
+    });
   }
 }, 1000 / 60);
 
@@ -124,7 +127,7 @@ function valueFromRange(value, low1, high1, low2, high2) {
 function Paddle(x, y, color, name, side) {
   this.position = { x: x, y: y }
   this.velocity = { x: 0, y: 0 }
-  this.speed = 10;
+  this.speed = 2;
 
   this.width = 25;
   this.height = 100;
@@ -164,12 +167,12 @@ function Ball() {
 
   this.direction = { x: Math.cos(this.angle), y: Math.sin(this.angle) }
 
-  this.speed = 3;
+  this.speed = 0.8;
   this.diameter = 25;
 }
 
 Ball.prototype.update = function () {
-  this.speed += 0.01;
+  this.speed += 0.0009;
 
   if (this.position.y > 700 || this.position.y < 0) {
       this.angle =  ((Math.PI*2) - this.angle);
