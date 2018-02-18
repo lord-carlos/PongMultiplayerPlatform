@@ -12,12 +12,17 @@ socket.on("update", function (data) {
 setInterval(function(){
   if(gameData){
     var estimate  = estimateCalc();
-    var hest = gameData.ball.position.y;
+    //var hest = gameData.ball.position.y;
 
     var paddle = gameData.paddles[socket.id];
-        
+    var foo;
+    if(estimate < 350) {
+        foo = paddle.position.y + (paddle.height/6);
+    } else {
+        foo = paddle.position.y + 5 * (paddle.height/6)
+    }
     
-    if(estimate > (paddle.position.y + (paddle.height/6)) && paddle.position.y + paddle.height <= 700)
+    if(estimate > foo && paddle.position.y + paddle.height <= 700)
     {
       socket.emit("moveDown");
     }
@@ -43,12 +48,9 @@ function estimateCalc() {
                
     var targetx = gameData.paddles[socket.id].position.x;
     
-    var oldDiff = targetx - oldPoint.x;
-    console.log("oldPoint.x: " + oldPoint.x);
-    var newDiff = targetx - currentPoint.x;
-    if(diff.x < 0) {
-        console.log("newDiff: " + newDiff);
-        console.log("oldDiff: " + oldDiff);
+    var oldDiff = Math.abs(targetx - oldPoint.x);
+    var newDiff = Math.abs(targetx - currentPoint.x);
+    if(oldDiff < newDiff) { 
         oldPoint = currentPoint;
         return 350;
     }
