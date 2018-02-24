@@ -106,7 +106,7 @@ function checkWinner(paddles, ball){
 }
 
 function CollisionDetector(paddle, ball){
-  if(paddle.position.y < ball.position.y && paddle.position.y + 100 > ball.position.y)
+  if(paddle.position.y < ball.position.y+(ball.diameter/2) && paddle.position.y + 100 > ball.position.y-(ball.diameter/2))
   {
     if(paddle.side == "left" && paddle.position.x + paddle.width >= ball.position.x - (ball.diameter/2) )
     {
