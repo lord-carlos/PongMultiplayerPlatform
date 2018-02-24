@@ -34,7 +34,7 @@ setInterval(function(){
     {
       socket.emit("moveUp");
     }
-    console.log(gameData.paddles);
+//     console.log(gameData.paddles);
     gameData = "";
   }
 }, 60/1000);
@@ -48,6 +48,9 @@ function estimateCalc() {
     }
                
     var targetx = gameData.paddles[socket.id].position.x;
+    if(isLeftSide) {
+        targetx += gameData.paddles[socket.id].width;
+    }
     
     var oldDiff = Math.abs(targetx - oldPoint.x);
     var newDiff = Math.abs(targetx - currentPoint.x);
@@ -73,4 +76,13 @@ function estimateCalc() {
     
     oldPoint = currentPoint;
     return yestimate;
+}
+
+function isLeftSide() {
+    var targetx = gameData.paddles[socket.id].position.x;
+    if(targetx > 30) 
+    {
+        return false;
+    }
+    return true;
 }
