@@ -3,7 +3,7 @@ var gameData;
 var oldPoint = {x: 0, y: 0};
 
 socket.on("connect", function(){
-  socket.emit("play", {name: "Carl-NodeJS"});
+  socket.emit("play", {name: "Carl-6"});
 })
 socket.on("update", function (data) {
   gameData = data;
@@ -22,7 +22,7 @@ setInterval(function(){
         foo = paddle.position.y + 5 * (paddle.height/6)
     }
     
-    if(estimate > foo && paddle.position.y + paddle.height <= 700)
+    if(estimate >= foo && paddle.position.y + paddle.height <= 700)
     {
       socket.emit("moveDown");
     }
@@ -34,6 +34,7 @@ setInterval(function(){
     {
       socket.emit("moveUp");
     }
+    console.log(gameData.paddles);
     gameData = "";
   }
 }, 60/1000);
@@ -53,17 +54,23 @@ function estimateCalc() {
     if(oldDiff < newDiff) { 
         oldPoint = currentPoint;
         return 350;
+    } else if(newDiff < 50) {
+        oldPoint = currentPoint;
+        return currentPoint.y;
     }
     
     var xchange = targetx - currentPoint.x;
     var xticks = xchange / diff.x;
     
     var ychange = xticks * diff.y;
+    var yestimate = currentPoint.y + ychange
     
+    if(yestimate < 0) {
+        yestimate = Math.abs(yestimate);
+    } else if (yestimate > 700) {
+        yestimate = 700 - (700 - yestimate);
+    }
     
     oldPoint = currentPoint;
-    return currentPoint.y + ychange;
-}
-
-function distance2ball() {
+    return yestimate;
 }
